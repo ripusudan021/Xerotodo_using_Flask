@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% block head %}
+<title>XeroTODO - Zero Task To Do</title>
+{% endblock head %}
+{% block body %}
+<div class="container mx-auto my-4 p-4 font-sans min-h-[85vh] overflow-y-auto">
+    <div class="space-y-5">
+
+        <!-- Todo Count Card -->
+        <div class="flex justify-between items-center text-white p-4 border md:w-2/5 h-[180px] mx-auto rounded-3xl px-10 border-gray-400">
+
+            <div>
+                <h1 class="text-2xl font-bold text-gray-300">Todo Done</h1>
+                <h3 class="text-lg font-mono text-gray-300">Keep it up</h3>
+            </div>
+
+            <div class="bg-[#e64a26] text-3xl rounded-full w-24 h-24 flex items-center justify-center text-black font-bold">
+                {{ completed_count }}/{{ tasks|length }}
+            </div>
+        </div>
+
+
+        <!-- Add New Task -->
+        <form action="/" method="POST"
+              class="flex justify-between items-center text-white md:w-[35%] mx-auto py-4">
+
+            <input
+                type="text" name="todo" id= "todo" placeholder="Write your next task"
+                class="text-gray-400 bg-[#1d1d1d92] rounded-3xl w-[80%] p-3 px-8 text-[16px]">
+
+            <button type="submit"
+                    class="bg-[#e64a26] rounded-full p-2 w-10 h-10 flex tasks-center justify-center cursor-pointer">
+
+                <img src="{{ url_for('static', filename='./assets/add.svg') }}" alt="+">
+            </button>
+
+        </form>
+
+
+        <!-- Todo List -->
+        <div class="space-y-5">
+
+            {% if tasks|length == 0 %}
+                <h1 class="text-center text-gray-400">
+                    No tasks added yet
+                </h1>
+            {% endif %}
+
+            {% for task in tasks %}
+            <div class="flex justify-between items-center text-white p-4 border md:w-2/5 mx-auto rounded-xl px-10 border-gray-400 bg-[#1d1d1d92]">
+
+                <div class="flex gap-3 items-center min-w-[80%]">
+
+                    <!-- Toggle Complete -->
+                    <a href="/toggle/{{ task.id }}">
+                        <div class="border border-[#e64a26] h-6 w-6 rounded-full cursor-pointer
+                            {% if task.completed %}
+                                bg-green-500
+                            {% endif %}">
+                        </div>
+                    </a>
+
+                    <div class="{% if task.completed %}line-through{% else %}font-bold{% endif %} text-lg">
+                        {{ task.todo }}
+                    </div>
+
+                </div>
+
+                <div class="flex gap-3">
+
+                    <button onclick="openModal('{{ task.id }}', '{{ task.todo }}')">
+                        <img src="{{ url_for('static', filename='assets/edit.svg') }}"
+                             alt="edit">
+                    </button>
+
+                    <a href="/delete/{{ task.id }}">
+                        <img src="{{ url_for('static', filename='assets/delete.svg') }}"
+                             alt="delete">
+                    </a>
+
+                </div>
+
+            </div>
+            {% endfor %}
+
+        </div>
+
+    </div>
+</div>
+<div id="editModal"
+     class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+
+    <div class="bg-[#1d1d1d] p-6 rounded-xl w-[400px]">
+
+        <h2 class="text-white text-xl mb-4">Edit Task</h2>
+
+        <form id="editForm" method="POST">
+            <input
+                type="text"
+                id="editInput"
+                name="todo"
+                class="w-full p-3 rounded-lg text-white bg-gray-800">
+
+            <div class="flex justify-end gap-3 mt-4">
+                <button type="button"
+                        onclick="closeModal()"
+                        class="bg-gray-600 px-4 py-2 rounded">
+                    Cancel
+                </button>
+
+                <button type="submit"
+                        class="bg-[#e64a26] px-4 py-2 rounded">
+                    Save
+                </button>
+            </div>
+        </form>
+
+    </div>
+</div>
+{% endblock body %}

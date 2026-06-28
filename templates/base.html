@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/output.css') }}">
+
+    {% block head %}{% endblock head %}
+</head>
+<script>
+    function openModal(id, todo) {
+        document.getElementById('editModal')
+                .classList.remove('hidden');
+
+        document.getElementById('editInput').value = todo;
+
+        document.getElementById('editForm').action =
+            `/edit/${id}`;
+    }
+
+    function closeModal() {
+        document.getElementById('editModal')
+                .classList.add('hidden');
+    }
+</script>
+<body>
+
+    <div class="flex justify-around my-2 py-2 text-white sticky top-0 bg-black z-10 text-2xl">
+        <div class="text-lg cursor-pointer font-bold">
+            <span>XERO</span>
+            <span class="text-[#e64a26]">TODO</span>
+        </div>
+
+        <button class="cursor-pointer hover:font-semibold">
+            <img
+                class="w-6 h-6"
+                src="{{ url_for('static', filename='./assets/clear.svg') }}"
+                alt="Clear Todos">
+        </button>
+    </div>
+
+    {% block body %}{% endblock body %}
+
+</body>
+</html>
